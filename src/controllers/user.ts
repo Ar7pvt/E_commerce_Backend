@@ -65,7 +65,7 @@ export const getUser=TryCatch(async (req,res,next)=>{
     });
 });
 
-export const deletUser=TryCatch(async (req,res,next)=>{
+export const deleteUser=TryCatch(async (req,res,next)=>{
     
     const id=req.params.id;
     const user=await User.findById(id);

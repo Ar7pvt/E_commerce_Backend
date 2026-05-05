@@ -38,7 +38,7 @@ export const getAllCategories = TryCatch(async (req, res, next) => {
     }
 
 
-    return res.status(201).json({
+    return res.status(200).json({
         success: true,
         categories,
     })
@@ -55,7 +55,7 @@ export const getAdminProducts = TryCatch(async (req, res, next) => {
         myCache.set("all-products", JSON.stringify(products));
     }
 
-    return res.status(201).json({
+    return res.status(200).json({
         success: true,
         products,
     })
@@ -75,7 +75,7 @@ export const getSingleProduct = TryCatch(async (req, res, next) => {
         myCache.set(`product-${id}`, JSON.stringify(product));
     }
 
-    return res.status(201).json({
+    return res.status(200).json({
         success: true,
         product,
     })
@@ -128,8 +128,9 @@ export const updateProduct = TryCatch(async (req, res, next) => {
     if (!product) return next(new ErrorHandler("Product not found", 400));
 
     if (photo) {
-        rm(product.photo, () => {
-            console.log(" Old Photo Deleted");
+        rm(product.photo, (err) => {
+            if(err) console.error("Error deleting old photo:", err);
+            else console.log(" Old Photo Deleted");
         });
         product.photo = photo.path;
     }
@@ -159,8 +160,9 @@ export const deleteProduct = TryCatch(async (req, res, next) => {
 
     if (!product) return next(new ErrorHandler("Product not found", 400));
 
-    rm(product.photo, () => {
-        console.log(" Old Photo Deleted");
+    rm(product.photo, (err) => {
+        if(err) console.error("Error deleting product photo:", err);
+        else console.log(" Old Photo Deleted");
     });
 
     await product.deleteOne();
@@ -217,7 +219,7 @@ export const getAllProducts = TryCatch(
 
         const totalPage = Math.ceil(filteredOnlyProduct.length / limit);
 
-        return res.status(201).json({
+        return res.status(200).json({
             success: true,
             products,
             totalPage,
